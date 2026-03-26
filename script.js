@@ -738,11 +738,11 @@ function addWorker() {
     c.onmessage = on_workermsg;
     setTimeout(function() {
         informWorker(c)
+        if (e.data && e.data.hashes) {
+    totalhashes += e.data.hashes;
+        }
 };
     }, 2E3)
-    worker.onmessage = function(e) {
-    if (e.data && e.data.hashes) {
-        totalhashes += e.data.hashes;
     }
 };
 }
