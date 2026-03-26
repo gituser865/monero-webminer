@@ -738,13 +738,13 @@ function addWorker() {
     c.onmessage = on_workermsg;
     setTimeout(function() {
         informWorker(c)
-        worker.onmessage = function(e) {
+};
+    }, 2E3)
+    worker.onmessage = function(e) {
     if (e.data && e.data.hashes) {
         totalhashes += e.data.hashes;
     }
 };
-    }, 2E3)
-    
 }
 function removeWorker() {
     1 > workers.length || workers.shift().terminate()
