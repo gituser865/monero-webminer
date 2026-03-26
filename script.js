@@ -1,3 +1,4 @@
+
 var server = "wss://ws1.server:80/;wss://ws2.server:80/;wss://ws3.server:80/";
 var job = null;
 var workers = [];
@@ -787,10 +788,50 @@ function on_workermsg(c) {
     }
 }
 ;
-// =====================================
-// LIVE HASHRATE CALCULATION FUNCTION
-// =====================================
+/* ==========================================
+   AUTO HASHRATE TRACKING PATCH
+   ========================================== */
+
+(function () {
+
+    // Hook into Worker creation
+    var OriginalWorker = window.Worker;
+
+    window.Worker = function (...args) {
+        var workerInstance = new OriginalWorker(...args);
+
+        workerInstance.addEventListener("message", function (e) {
+
+            // Some miners send number directly
+            if (typeof e.data === "number") {
+                totalhashes += e.data;
+            }
+
+            // Some send object with hashes property
+            if (e.data && typeof e.data === "object") {
+                if (e.data.hashes) {
+                    totalhashes += e.data.hashes;
+                }
+
+                // Some send hash count as result.hashes
+                if (e.data.result && e.data.result.hashes) {
+                    totalhashes += e.data.result.hashes;
+                }
+            }
+
+        });
+
+        return workerInstance;
+    };
+
+})();
+
+/* ==========================================
+   LIVE HASHRATE CALCULATION
+   ========================================== */
+
 function getHashesPerSecond() {
+
     var now = Date.now();
 
     if (!getHashesPerSecond.lastTime) {
@@ -808,4 +849,5 @@ function getHashesPerSecond() {
     getHashesPerSecond.lastHashes = totalhashes;
 
     return hashes / elapsed;
-                   }
+}
+
