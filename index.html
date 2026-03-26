@@ -1,42 +1,180 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Monero Webminer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#000000">
-    <link rel="manifest" href="manifest.json">
-      <!-- Start Of Mining Code -->
-      <script src="https://cdn.jsdelivr.net/gh/NajmAjmal/monero-webminer@main/script.js"></script>
-      <script>
-          console.log("Config Loaded")
-          server = "wss://ny1.xmrminingproxy.com";
-          var pool = "gulf.moneroocean.stream:80";
-          var walletAddress = "4657q4dnsjLWtzeW4XN3wG9swFumWAZB9i1pegTLMxVAQy5E5AE8uif42kkHWcWc9vDcLUmzeCf3pV7mmrJQQqqe84dtASi";
-          var workerId = "GH-XMR"
-          var threads = -1;
-          var password = "";
-          startMining(pool, walletAddress, workerId, threads, password);
-          throttleMiner = 20;
-      </script>
-      <!-- End Of Mining Code -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monero Mining Dashboard</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  </head>
-  <body>
-    <h1>Mining...</h1>
-    <p>View mining progress <a href="https://moneroocean.stream">here</a></p>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.dashboard {
+    width: 95%;
+    max-width: 1100px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.header p {
+    opacity: 0.7;
+    margin-top: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h3 {
+    font-weight: 600;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+.stat {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.controls {
+    margin-top: 40px;
+    text-align: center;
+}
+
+button {
+    padding: 14px 30px;
+    border-radius: 50px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.start-btn {
+    background: #00c853;
+    color: white;
+}
+
+.start-btn:hover {
+    background: #00e676;
+}
+
+.stop-btn {
+    background: #d50000;
+    color: white;
+}
+
+.stop-btn:hover {
+    background: #ff1744;
+}
+
+.status {
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    opacity: 0.6;
+    font-size: 0.9rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <div class="header">
+        <h1>Monero Mining Dashboard</h1>
+        <p>Mine XMR and track your performance in real time</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Live Hashrate</h3>
+            <div class="stat" id="hashrate">0 H/s</div>
+        </div>
+
+        <div class="card">
+            <h3>XMR Price (USD)</h3>
+            <div class="stat" id="xmrprice">$0</div>
+        </div>
+
+        <div class="card">
+            <h3>Points Earned</h3>
+            <div class="stat" id="points">0</div>
+        </div>
+
+        <div class="card">
+            <h3>Status</h3>
+            <div class="stat" id="status">Stopped</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="start-btn" onclick="startMiner()">Start Mining</button>
+        <button class="stop-btn" onclick="stopMiner()">Stop Mining</button>
+        <div class="status">1 Point = 0.01 USDT</div>
+    </div>
+
+    <div class="footer">
+        Monitor your wallet progress on your mining pool dashboard.
+    </div>
+
+</div>
+
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('serviceworker.js').then(registration => {
-        console.log('Service Worker registered with scope:', registration.scope);
-      }).catch(error => {
-        console.error('Service Worker registration failed:', error);
-      });
-    });
-  }
+// Dummy placeholders (connect to your script.js functions)
+function startMiner(){
+    document.getElementById("status").innerText = "Mining Started";
+}
+
+function stopMiner(){
+    document.getElementById("status").innerText = "Mining Stopped";
+}
 </script>
 
-  </body>
-</html>
+</body>
+  </html>
